@@ -35,8 +35,8 @@ export const crawler = new crawlerLib({
                     }
                     else
                     {
-                        response.insertExternalLink(url);
-                        crawler.queue(uri + url);
+                        response.insertInternalLink(url);
+                        // crawler.queue(uri + url);
                     }
                 }); 
 
