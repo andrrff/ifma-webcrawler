@@ -8,12 +8,6 @@ const urlList = new Set();
 
 const isValidUrl = (url: string) => {
     if (urlList.has(url)) return false;
-
-    try {
-        urlList.add(url);
-    } catch (e) {
-        return false;
-    }
     return true;
 };
 
@@ -34,6 +28,7 @@ const crawler = new crawlerLib({
 
                     if (!isValidUrl(url)) return;
 
+                    urlList.add(url);
                     crawler.queue(url);
                     console.log(url);
                 }
