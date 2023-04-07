@@ -1,53 +1,18 @@
 import express from "express";
-
-const crawlerLib = require('crawler');
+import { crawler } from "./controller/crawlerController";
+import { DBContext } from "./services/DBContext";
 
 const app     = express();
 const port    = 8080;
-const urlList = new Set();
 
-const isValidUrl = (url: string) => {
-    if (urlList.has(url)) return false;
-    return true;
-};
-
-const crawler = new crawlerLib({
-    maxConnections: 10000,
-    callback: (error: any, res: { $: any; }, done: () => void) => {
-        if (error) {
-            console.log(error);
-        } else {
-            try
-            {
-                res.$('a').each((_index: any, a: { attribs: { href: any; }; }) => {
-                if (a.attribs.href &&
-                    a.attribs.href.includes('https://') ||
-                    a.attribs.href.includes('http://'))
-                {
-                    const url = a.attribs.href;
-
-                    if (!isValidUrl(url)) return;
-
-                    urlList.add(url);
-                    crawler.queue(url);
-                    console.log(url);
-                }
-            }); 
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
-        }
-
-        done();
-    }
-});
+DBContext.getInstance().connect();
 
 app.use(express.json());
 
 app.post("/", (req, res) => {
-    res.send(crawler.queue(req.body));
+    crawler.queue(req.body);
+
+    res.send("Crawling started");
 });
 
 app.listen(port, () => {
