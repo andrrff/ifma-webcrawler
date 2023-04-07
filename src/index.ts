@@ -49,8 +49,10 @@ const crawler = new crawlerLib({
     }
 });
 
-app.get("/", (req, res) => {
-    res.send(crawler.queue('https://www.zenrows.com/blog/javascript-web-crawler-nodejs#before-getting-started'));
+app.use(express.json());
+
+app.post("/", (req, res) => {
+    res.send(crawler.queue(req.body));
 });
 
 app.listen(port, () => {
