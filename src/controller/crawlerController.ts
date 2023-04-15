@@ -36,7 +36,7 @@ export const crawler = new crawlerLib({
                     else
                     {
                         response.insertInternalLink(url);
-                        // crawler.queue(uri + url);
+                        crawler.queue(uri + url);
                     }
                 }); 
 
