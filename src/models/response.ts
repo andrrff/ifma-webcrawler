@@ -4,6 +4,8 @@ export class Response {
     public metatags: string[];
     public headers: string[];
     public body: string[];
+    public rawText: string;
+    public terms: string[];
 
     constructor() {
         this.internalLinks = [];
@@ -31,5 +33,19 @@ export class Response {
 
     public insertBody(body: string) {
         this.body.push(body);
+    }
+
+    public insertRawText(rawText: string) {
+        this.rawText = rawText;
+    }
+
+    public insertTerms(text: string) {
+        let words = text.split(' ');
+        
+        words = words.filter((value, index, self) => {
+            return self.indexOf(value) === index && value !== '';
+        });
+
+        this.terms = words;
     }
 }
