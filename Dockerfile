@@ -1,12 +1,11 @@
 FROM node:14
+ENV PORT 8080
+EXPOSE 8080
 
-WORKDIR /app
-
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 COPY package.json .
-COPY package-lock.json .
-
 RUN npm install
-
 COPY . .
 
 CMD ["npm", "start"]

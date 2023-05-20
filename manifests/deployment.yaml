@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-kubernetes-service
+  labels:
+    app: azure-kubernetes-service
+  namespace: namespace-workflow-1684607545542
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-kubernetes-service
+  template:
+    metadata:
+      labels:
+        app: azure-kubernetes-service
+    spec:
+      containers:
+        - name: azure-kubernetes-service
+          image: acrworkflow1684607545542.azurecr.io/image-workflow-1684607545542:latest
+          ports:
+            - containerPort: 8080
