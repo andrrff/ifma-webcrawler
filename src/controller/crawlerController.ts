@@ -8,7 +8,7 @@ const crawlerLib = require('crawler');
 const request    = new Request();
 const response   = new Response();
 const data       = new persistenceController();
-const maxLinks   = 10000;
+const maxLinks   = 1000;
 
 let eventCrawler = new EventCrawler(request, response);
 
