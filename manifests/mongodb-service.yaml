@@ -4,6 +4,7 @@ metadata:
   name: mongodb-service
   namespace: namespace-workflow-1684607545542
 spec:
+  type: LoadBalancer
   selector:
     app: mongodb
   ports:
