@@ -13,6 +13,8 @@ env:
     DEPLOYMENT_MANIFEST_PATH: |
         manifests/deployment.yaml
         manifests/service.yaml
+        manifests/mongodb-deployment.yaml
+        manifests/mongodb-service.yaml
 jobs:
     buildImage:
         permissions:
