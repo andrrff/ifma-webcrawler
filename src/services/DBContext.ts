@@ -1,12 +1,15 @@
 import { MongoClient, Db, Collection } from "mongodb";
 import * as dotenv from "dotenv";
 import { IEventCrawler } from "../interfaces/IEventCrawler";
+import { IDictionary } from "../interfaces/IDictionary";
+import { ITermConstraint } from "../interfaces/ITermConstraint";
 
 export class DBContext {
   private static instance: DBContext;
   private mongoClient: MongoClient;
   private db: Db;
-  private collection: Collection<IEventCrawler>;
+  private collectionEvent: Collection<IEventCrawler>;
+  private collectionDictionary: Collection<ITermConstraint>;
 
   private constructor() {
     dotenv.config();
@@ -24,16 +27,21 @@ export class DBContext {
     return this.db;
   }
 
-  public getCollection(): Collection<IEventCrawler> {
-    return this.collection;
+  public getCollectionEventCrawler(): Collection<IEventCrawler> {
+    return this.collectionEvent;
+  }
+
+  public getCollectionDictionary(): Collection<ITermConstraint> {
+    return this.collectionDictionary;
   }
 
   public async connect(): Promise<Db> {
     return new Promise(async (resolve, reject) => {
       await this.mongoClient.connect();
 
-      this.db         = this.mongoClient.db(process.env.DB_NAME);
-      this.collection = this.db.collection(process.env.DB_COLLECTION);
+      this.db                   = this.mongoClient.db(process.env.DB_NAME);
+      this.collectionEvent      = this.db.collection(process.env.DB_COLLECTION_EVENTCRAWLER);
+      this.collectionDictionary = this.db.collection(process.env.DB_COLLECTION_DICTIONARY);
       
       resolve(this.db);
     });

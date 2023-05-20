@@ -8,7 +8,7 @@ const crawlerLib = require('crawler');
 const request    = new Request();
 const response   = new Response();
 const data       = new persistenceController();
-const maxLinks   = 1000;
+const maxLinks   = 10000;
 
 let eventCrawler = new EventCrawler(request, response);
 
@@ -32,17 +32,18 @@ const insertUriUsed = (url: string) => {
 const ignoreSelector = `:not([href$=".png"]):not([href$=".jpg"]):not([href$=".mp4"]):not([href$=".mp3"]):not([href$=".gif"])`;
 
 export const crawler = new crawlerLib({
-    maxConnections: 1,
+    maxConnections: 100,
     callback: (error: any, res: any, done: () => void) => {
         if (error) {
             console.log(error);
         } else {
             try
             {
-                res.$(`a[href^="/"]${ignoreSelector},a[href^="${uri}"]${ignoreSelector},a[href^="https://"],a[href^="http://"]`).each((_index: any, a: { attribs: { href: any; }; }) => {
+                res.$(`a[href^="/"]${ignoreSelector},a[href^="${uri}"]${ignoreSelector},a[href^="https://"],a[href^="http://"]`)
+                .each((_index: number, a: { attribs: { href: any; }; }) => {
                     const url = a.attribs.href;
 
-                    if (validations.validate(a.attribs.href, request.links)) {
+                    if (validations.validate(url, uri, response.externalLinks)) {
                         if(!insertUriUsed(url)) return;
 
                         console.log(`id: ${uriUsed.length} external: ${url}`);
@@ -59,17 +60,17 @@ export const crawler = new crawlerLib({
                         
                         response.insertInternalLink(url);
                     }
-                }); 
+                });
 
-                res.$('meta').each((_index: any, meta: { attribs: { content: any; }; }) => {
+                res.$('meta').each((_index: number, meta: { attribs: { content: any; }; }) => {
                     response.insertMetatag(meta.attribs.content);
                 });
 
-                res.$('header').children().each((_index: any, header: { children: any }) => {
+                res.$('header').children().each((_index: number, header: { children: any }) => {
                     recursiveChildrenDataHeader(header.children);
                 });
 
-                res.$('body').children().each((_index: any, body: { children: any; }) => {
+                res.$('body').children().each((_index: number, body: { children: any; }) => {
                     recursiveChildrenDataBody(body.children);
 
                     response.insertRawText(bodyText);
@@ -83,7 +84,7 @@ export const crawler = new crawlerLib({
             }
             catch (e)
             {
-                console.log(e);
+                console.error(e);
             }
         }
     },
