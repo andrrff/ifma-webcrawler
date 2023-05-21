@@ -15,7 +15,7 @@ env:
         manifests/service.yaml
         manifests/mongodb/mongodb-client.yaml
         manifests/mongodb/mongodb-deployment.yaml
-        manifests/mongodb/mongodb-clusterip-svc.yaml
+        manifests/mongodb/mongodb-loadbalance-svc.yaml
         manifests/mongodb/mongodb-pv.yaml
         manifests/mongodb/mongodb-pvc.yaml
         manifests/mongodb/mongodb-secrets.yaml
