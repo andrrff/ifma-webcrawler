@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: mongo
-  name: mongo-loadbalance-svc
+  name: mongodb-service
 spec:
   ports:
   - port: 27017
@@ -11,4 +11,4 @@ spec:
     targetPort: 27017
   selector:
     app: mongo
-  type: LoadBalancer
+  clusterIP: None
