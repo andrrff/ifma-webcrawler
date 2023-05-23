@@ -65,9 +65,14 @@ app.get('/search', (req: Request, res: Response) => {
     });
 });
 
-app.get("/api/status", (_req, res) => {
+app.get("/api/status", async (_req, res) => {
     const client = DBContext.getInstance().getMongoClient();
-    res.send(client);
+
+    const adminDb = client.db('admin');
+    const serverStatus = await adminDb.command({ serverStatus: 1 });
+    console.log('Status do servidor MongoDB:', serverStatus);
+
+    res.send('Status do servidor MongoDB: ' + serverStatus);
 });
 
 app.listen(port, () => {

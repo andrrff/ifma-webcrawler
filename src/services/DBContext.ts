@@ -13,7 +13,7 @@ export class DBContext {
 
   private constructor() {
     dotenv.config();
-    this.mongoClient = new MongoClient(process.env.DB_CONN_STRING);
+    this.mongoClient = new MongoClient(process.env.MONGODB_URI);
   }
 
   public static getInstance(): DBContext {
