@@ -4,7 +4,7 @@ metadata:
   name: azure-kubernetes-service
   labels:
     app: azure-kubernetes-service
-  namespace: namespace-workflow-1684607545542
+  namespace: crawler-bot
 spec:
   replicas: 1
   selector:
