@@ -13,7 +13,18 @@ export class DBContext {
 
   private constructor() {
     dotenv.config();
-    this.mongoClient = new MongoClient(process.env.MONGODB_URI);
+    var password = process.env.MONGODB_PASSWORD;
+    var username = process.env.MONGODB_USERNAME;
+    var database = "mongodb-service";
+    const connectionString = `mongodb+srv://${username}:${password}@mongodb-service:27017/CrawlerBot?retryWrites=true&w=majority`;
+
+    if(password === undefined || username === undefined)
+    {
+      this.mongoClient = new MongoClient(process.env.DB_CONN_STRING);  
+      return;
+    }
+
+    this.mongoClient = new MongoClient(connectionString);
   }
 
   public static getInstance(): DBContext {
