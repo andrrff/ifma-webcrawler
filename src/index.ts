@@ -65,6 +65,11 @@ app.get('/search', (req: Request, res: Response) => {
     });
 });
 
+app.get("/api/status", (_req, res) => {
+    const client = DBContext.getInstance().getMongoClient();
+    res.send(client);
+});
+
 app.listen(port, () => {
     console.log(`server started at http://localhost:${port}`);
 });

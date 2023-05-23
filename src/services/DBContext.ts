@@ -23,6 +23,10 @@ export class DBContext {
     return DBContext.instance;
   }
 
+  public getMongoClient(): MongoClient {
+    return this.mongoClient;
+  }
+
   public getDb(): Db {
     return this.db;
   }
