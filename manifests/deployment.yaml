@@ -21,7 +21,7 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: MONGODB_URI
+            - name: MONGODB_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: mongo-creds
