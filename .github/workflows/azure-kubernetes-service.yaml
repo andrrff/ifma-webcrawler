@@ -12,6 +12,7 @@ env:
     CONTAINER_NAME: image-workflow-1684607545542
     DEPLOYMENT_MANIFEST_PATH: |
         manifests/deployment.yaml
+        manifests/namespace.yaml
         manifests/service.yaml
         manifests/mongodb/mongodb-client.yaml
         manifests/mongodb/mongodb-deployment.yaml
