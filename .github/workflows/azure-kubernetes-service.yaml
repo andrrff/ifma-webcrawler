@@ -20,6 +20,8 @@ env:
         manifests/mongodb/mongodb-pv.yaml
         manifests/mongodb/mongodb-pvc.yaml
         manifests/mongodb/mongodb-secrets.yaml
+        manifests/mongo-express/mongoexpress-deployment.yaml
+        manifests/mongo-express/mongoexpress-service.yaml
 jobs:
     buildImage:
         permissions:
