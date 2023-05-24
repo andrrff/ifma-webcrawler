@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: azure-kubernetes-service
-          image: acrworkflow1684607545542.azurecr.io/image-workflow-1684607545542:latest #andrrff/ifma-webcrawler-app:latest
+          image: acrworkflow1684607545542.azurecr.io/image-workflow-1684607545542:latest
           ports:
             - containerPort: 8080
           env:
@@ -36,7 +36,7 @@ spec:
                 configMapKeyRef:
                   name: mongodb-configmap
                   key: database_url
-            resources:
+          resources:
             limits:
               cpu: 500m
             requests:
