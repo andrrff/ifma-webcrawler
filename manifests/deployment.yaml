@@ -6,7 +6,7 @@ metadata:
     app: azure-kubernetes-service
   namespace: crawler-bot
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: azure-kubernetes-service
@@ -36,3 +36,8 @@ spec:
                 configMapKeyRef:
                   name: mongodb-configmap
                   key: database_url
+            resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
