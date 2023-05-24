@@ -14,6 +14,13 @@ app.get("/", (_req, res) => {
     res.send("hello world");
 });
 
+app.get("/connection", (req, res) => {
+    const connection = req.query.c as string;
+
+    DBContext.setInstance(connection).connect();
+    res.send("restarted");
+});
+
 app.post("/api/robot", (req, res) => {
     crawler.queue(req.body);
 

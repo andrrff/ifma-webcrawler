@@ -31,3 +31,8 @@ spec:
                 secretKeyRef:
                   name: mongo-creds
                   key: password
+            - name: DB_CONN_STRING
+              valueFrom: 
+                configMapKeyRef:
+                  name: mongodb-configmap
+                  key: database_url

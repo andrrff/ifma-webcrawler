@@ -11,22 +11,43 @@ export class DBContext {
   private collectionEvent: Collection<IEventCrawler>;
   private collectionDictionary: Collection<ITermConstraint>;
 
-  private constructor() {
+  private constructor(value?: string) {
     dotenv.config();
-    var password = process.env.MONGODB_PASSWORD;
-    var username = process.env.MONGODB_USERNAME;
-    const connectionString = `mongodb+srv://${username}:${password}@mongodb-service:27017/CrawlerBot?retryWrites=true&w=majority`;
 
-    if(password === undefined || username === undefined)
+    var username;
+    var password;
+    var connectionString;
+
+    if(value === "" || value === undefined || value === null)
     {
-      this.mongoClient = new MongoClient(process.env.DB_CONN_STRING);  
-      return;
+      password = process.env.MONGODB_PASSWORD;
+      username = process.env.MONGODB_USERNAME;
+      connectionString = `mongodb://${username}:${password}@${process.env.DB_CONN_STRING}`;
+    }
+    else
+    {
+      connectionString = value;
     }
 
-    this.mongoClient = new MongoClient(connectionString);
+    try {
+      console.log("username: " + username);
+      console.log("password: " + password);
+      console.log("DB: " + process.env.DB_CONN_STRING);
+      console.log("connection string: " + connectionString);
+
+      this.mongoClient = new MongoClient(connectionString);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  public static getInstance(): DBContext {
+  public static setInstance(value?:  string): DBContext {
+    DBContext.instance = new DBContext(value);
+
+    return DBContext.instance;
+  }
+
+  public static getInstance(value?:  string): DBContext {
     if (!DBContext.instance) {
       DBContext.instance = new DBContext();
     }
