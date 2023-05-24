@@ -15,7 +15,6 @@ export class DBContext {
     dotenv.config();
     var password = process.env.MONGODB_PASSWORD;
     var username = process.env.MONGODB_USERNAME;
-    var database = "mongodb-service";
     const connectionString = `mongodb+srv://${username}:${password}@mongodb-service:27017/CrawlerBot?retryWrites=true&w=majority`;
 
     if(password === undefined || username === undefined)

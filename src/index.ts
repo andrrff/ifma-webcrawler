@@ -10,6 +10,10 @@ DBContext.getInstance().connect();
 
 app.use(express.json());
 
+app.get("/", (_req, res) => {
+    res.send("hello world");
+});
+
 app.post("/api/robot", (req, res) => {
     crawler.queue(req.body);
 
@@ -55,8 +59,9 @@ app.get('/search', (req: Request, res: Response) => {
 
         // Ordenar os índices por ordem decrescente de contagem
         const indicesOrdenados = Object.entries(contagemIndices)
-        .sort(([, countA], [, countB]) => countB - countA)
-        .map(([index]) => index);
+            .sort(([ , countA]: [string, number], [ , countB]: [string, number]) => countB - countA)
+            .map(([index]: [string, number]) => index);
+
 
         // Retornar os índices mais frequentes com seus GUIDs
         const indicesMaisFrequentes = indicesComGUIDs.filter(({ index }) => indicesOrdenados.includes(index));
