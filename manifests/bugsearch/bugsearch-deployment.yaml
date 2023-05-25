@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: bugsearch
-        image: acrworkflow1684607545542.azurecr.io/bugsearch
+        image: andrrff/ifma-webcrawler-app #acrworkflow1684607545542.azurecr.io/bugsearch
         ports:
         - containerPort: 8082
