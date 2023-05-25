@@ -6,7 +6,7 @@ metadata:
   labels:
     app: bugsearch
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: bugsearch
@@ -20,3 +20,8 @@ spec:
         image: acrworkflow1684607545542.azurecr.io/bugsearch
         ports:
         - containerPort: 8082
+        resources:
+              limits:
+                cpu: 500m
+              requests:
+                cpu: 200m
