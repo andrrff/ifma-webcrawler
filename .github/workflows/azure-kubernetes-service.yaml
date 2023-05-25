@@ -80,6 +80,6 @@ jobs:
               name: Deploys application (BugSearch)
               with:
                 action: deploy
-                images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME_BUGSEARCH }}:${{ github.sha }}
+                images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME_BUGSEARCH }}:latest
                 manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH_BUGSEARCH }}
                 namespace: crawler-bot
