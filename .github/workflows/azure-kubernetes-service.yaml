@@ -10,6 +10,7 @@ env:
     CLUSTER_NAME: CrawlerBot
     CLUSTER_RESOURCE_GROUP: ifma-crawler
     CONTAINER_NAME: image-workflow-1684607545542
+    CONTAINER_NAME_BUGSEARCH: bugsearch
     DEPLOYMENT_MANIFEST_PATH: |
         manifests/deployment.yaml
         manifests/namespace.yaml
@@ -22,6 +23,7 @@ env:
         manifests/mongodb/mongodb-secrets.yaml
         manifests/mongo-express/mongoexpress-deployment.yaml
         manifests/mongo-express/mongoexpress-service.yaml
+    DEPLOYMENT_MANIFEST_PATH_BUGSEARCH: |
         manifests/bugsearch/bugsearch-deployment.yaml
         manifests/bugsearch/bugsearch-service.yaml
 jobs:
@@ -68,9 +70,16 @@ jobs:
                 resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
                 use-kubelogin: "true"
             - uses: Azure/k8s-deploy@v4
-              name: Deploys application
+              name: Deploys application (Crawler-Bot)
               with:
                 action: deploy
                 images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
                 manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+                namespace: crawler-bot
+            - uses: Azure/k8s-deploy@v4
+              name: Deploys application (BugSearch)
+              with:
+                action: deploy
+                images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME_BUGSEARCH }}:${{ github.sha }}
+                manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH_BUGSEARCH }}
                 namespace: crawler-bot
