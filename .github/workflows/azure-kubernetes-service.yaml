@@ -23,6 +23,8 @@ env:
         manifests/mongodb/mongodb-secrets.yaml
         manifests/mongo-express/mongoexpress-deployment.yaml
         manifests/mongo-express/mongoexpress-service.yaml
+        manifests/bugsearch/bugsearch-deployment.yaml
+        manifests/bugsearch/bugsearch-service.yaml
 jobs:
     buildImage:
         permissions:
