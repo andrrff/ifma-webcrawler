@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     app: bugsearch
-  type: LoadBalancer  
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8082
