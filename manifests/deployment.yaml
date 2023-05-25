@@ -6,7 +6,7 @@ metadata:
     app: azure-kubernetes-service
   namespace: crawler-bot
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: azure-kubernetes-service
