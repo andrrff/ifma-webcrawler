@@ -29,12 +29,7 @@ app.get("/connection", (req, res) => {
 
 app.post("/api/robot", async (req, res) => {
     try {
-        await new Promise<void>((resolve) => {
-            setTimeout(() => {
-                crawler.queue(req.body);
-                resolve();
-            }, 0);
-        });
+        crawler.queue(req.body);
 
         res.send("Crawling started");
     } catch (err) {
