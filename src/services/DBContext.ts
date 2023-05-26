@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import { IEventCrawler } from "../interfaces/IEventCrawler";
 import { IDictionary } from "../interfaces/IDictionary";
 import { ITermConstraint } from "../interfaces/ITermConstraint";
+import { ILinks } from "../interfaces/ILinks";
 
 export class DBContext {
   private static instance: DBContext;
@@ -10,6 +11,7 @@ export class DBContext {
   private db: Db;
   private collectionEvent: Collection<IEventCrawler>;
   private collectionDictionary: Collection<ITermConstraint>;
+  private collectionLinks: Collection<ILinks>;
 
   private constructor(value?: string) {
     dotenv.config();
@@ -22,15 +24,15 @@ export class DBContext {
     {
       password = process.env.MONGODB_PASSWORD;
       username = process.env.MONGODB_USERNAME;
-	  
-	  if(password == undefined || username == undefined)
-	  {
-		connectionString = "mongodb://db:27017/admin";
-	  }
-	  else
-	  {
-		connectionString = `mongodb://${username}:${password}@${process.env.DB_CONN_STRING}`;
-	  }
+
+      if(password == undefined || username == undefined)
+      {
+        connectionString = `mongodb://db:27017/admin`;
+      }
+      else
+      {
+        connectionString = `mongodb://${username}:${password}@${process.env.DB_CONN_STRING}`;
+      }
     }
     else
     {
@@ -78,6 +80,10 @@ export class DBContext {
     return this.collectionDictionary;
   }
 
+  public getCollectionLinks(): Collection<ILinks> {
+    return this.collectionLinks;
+  }
+
   public async connect(): Promise<Db> {
     return new Promise(async (resolve, reject) => {
       await this.mongoClient.connect();
@@ -85,6 +91,7 @@ export class DBContext {
       this.db                   = this.mongoClient.db(process.env.DB_NAME);
       this.collectionEvent      = this.db.collection(process.env.DB_COLLECTION_EVENTCRAWLER);
       this.collectionDictionary = this.db.collection(process.env.DB_COLLECTION_DICTIONARY);
+      this.collectionLinks      = this.db.collection(process.env.DB_COLLECTION_LINKS);
       
       resolve(this.db);
     });

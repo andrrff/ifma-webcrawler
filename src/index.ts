@@ -2,16 +2,22 @@ import express, {Request, Response} from "express";
 import { crawler } from "./controller/crawlerController";
 import { DBContext } from "./services/DBContext";
 import _ from 'lodash';
+import { searchResult } from "./models/searchResult";
+import { webPageCallerController } from "./controller/webPageCallerController";
 
-const app     = express();
-const port    = 8080;
+const app  = express();
+const port = 8080;
 
 DBContext.getInstance().connect();
 
 app.use(express.json());
 
 app.get("/", (_req, res) => {
-    res.send("hello world");
+    res.send("hello world!");
+});
+
+app.get("/summary", (_req, res) => {
+    res.send("summary!");
 });
 
 app.get("/connection", (req, res) => {
@@ -21,59 +27,76 @@ app.get("/connection", (req, res) => {
     res.send("restarted");
 });
 
-app.post("/api/robot", (req, res) => {
-    crawler.queue(req.body);
+app.post("/api/robot", async (req, res) => {
+    try {
+        await new Promise<void>((resolve) => {
+            setTimeout(() => {
+                crawler.queue(req.body);
+                resolve();
+            }, 0);
+        });
 
-    res.send("Crawling started");
+        res.send("Crawling started");
+    } catch (err) {
+        console.error("Error while starting crawler:", err);
+        res.status(500).send("Error starting crawler");
+    }
 });
+
 
 app.get('/search', (req: Request, res: Response) => {
   const searchTerm = req.query.q as string;
-
   const dictionary = DBContext.getInstance().getCollectionDictionary().find().toArray();
+  const links      = DBContext.getInstance().getCollectionLinks().find().toArray();
 
-  dictionary.then((data) => {
-        // Filtrar os dados com base na palavra de busca
-        // const dadosFiltrados = data.filter(item => item.word.includes(searchTerm));
-
-        // Dividir a string de busca em palavras separadas
+  dictionary.then(async (data) => {
         const searchWords = searchTerm.split(' ');
-
-        // Filtrar os dados com base nas palavras de busca
-        const dadosFiltrados = data.filter(item => {
-        if (!item.word) {
-            return false;
-        }
-        const word = item.word.toLowerCase();
-        return searchWords.some(searchWord => word.includes(searchWord.toLowerCase()));
-        });
-
-        // Mapear os índices e seus respectivos GUIDs
-        const indicesComGUIDs: any[] = [];
-        const guidSet = new Set();
-        dadosFiltrados.forEach(item => {
-        const indexes = Object.entries(item.index);
-        indexes.forEach(([index, guid]) => {
-            if (!guidSet.has(guid)) {
-            guidSet.add(guid);
-            indicesComGUIDs.push({ index, guid });
+        const filtered    = data.filter(item => {
+            if (!item.word) {
+                return false;
             }
-        });
+
+            const word = item.word.toLowerCase();
+            return searchWords.some(searchWord => word.includes(searchWord.toLowerCase()));
         });
 
-        // Contar a ocorrência dos índices
-        const contagemIndices = _.countBy(indicesComGUIDs, 'index');
+        const guidIndexes: searchResult[] = new Array<searchResult>();
+        const guidSet = new Set();
 
-        // Ordenar os índices por ordem decrescente de contagem
-        const indicesOrdenados = Object.entries(contagemIndices)
+        await Promise.all(filtered.map(async (item) => {
+            const indexes = Object.entries(item.index);
+
+            await Promise.all(indexes.map(async ([index, guid]) => {
+                try {
+                    if (!guidSet.has(guid)) {
+                        console.log(guid);
+                        let search = new searchResult(Number(index), guid, '', '', '', '', new Array<string>());
+                        guidSet.add(guid);
+
+                        const dataLink = await links;
+                        search.link = dataLink.find((link) => link.guid === guid).link;
+
+                        const data = await webPageCallerController.getWebpageInfoAsync(search);
+                        item.index[Number(index)] = guid;
+                        guidIndexes.push(data);
+                    }
+                } catch (error) {
+                console.error(error);
+                }
+            }));
+        }));
+
+
+        const countedIndexes = _.countBy(guidIndexes, 'index');
+
+        const sortedIndexes = Object.entries(countedIndexes)
             .sort(([ , countA]: [string, number], [ , countB]: [string, number]) => countB - countA)
             .map(([index]: [string, number]) => index);
 
 
-        // Retornar os índices mais frequentes com seus GUIDs
-        const indicesMaisFrequentes = indicesComGUIDs.filter(({ index }) => indicesOrdenados.includes(index));
+        const results = guidIndexes.filter(({ index }) => sortedIndexes.includes(index.toString()));
 
-        res.json({ indicesMaisFrequentes });
+        res.json({ searchResults: guidIndexes });
     });
 });
 

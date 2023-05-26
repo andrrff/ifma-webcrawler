@@ -9,8 +9,8 @@ export class EventCrawler implements IEventCrawler  {
     request: Request;
     response: Response;
 
-    constructor(req: Request, res: Response) {
-        this.index    = uuidv4();
+    constructor(req: Request, res: Response, id?: string) {
+        this.index    = id || uuidv4();
         this.request  = req;
         this.response = res;
     }

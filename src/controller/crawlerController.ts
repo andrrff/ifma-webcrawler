@@ -1,10 +1,11 @@
-import { ValicationsController as validations } from './validationsController';
+import { ValidationsController as validations } from '../models/validationsController';
 import { Request } from "../models/request";
 import { Response } from "../models/response";
 import { EventCrawler } from '../models/eventCrawler';
 import { persistenceController } from "./persistenceController";
 
 const crawlerLib = require('crawler');
+const uuidv4     = require('uuid/v4');
 const request    = new Request();
 const response   = new Response();
 const data       = new persistenceController();
@@ -33,15 +34,18 @@ const ignoreSelector = `:not([href$=".png"]):not([href$=".jpg"]):not([href$=".mp
 
 export const crawler = new crawlerLib({
     maxConnections: 100,
+    setTimeout: 500,
     callback: (error: any, res: any, done: () => void) => {
         if (error) {
             console.log(error);
         } else {
             try
             {
+                const id = uuidv4();
+
                 res.$(`a[href^="/"]${ignoreSelector},a[href^="${uri}"]${ignoreSelector},a[href^="https://"],a[href^="http://"]`)
                 .each((_index: number, a: { attribs: { href: any; }; }) => {
-                    const url = a.attribs.href;
+                    let url = a.attribs.href;
 
                     if (validations.validate(url, uri, response.externalLinks)) {
                         if(!insertUriUsed(url)) return;
@@ -52,14 +56,16 @@ export const crawler = new crawlerLib({
                     }
                     else
                     {
-                        let internalUrl = uri + url;
+                        url = uri + url;
                         
-                        if(!insertUriUsed(internalUrl)) return;
+                        if(!insertUriUsed(url)) return;
                         
-                        console.log(`id: ${uriUsed.length} internal: ${internalUrl}`);
+                        console.log(`id: ${uriUsed.length} internal: ${url}`);
                         
                         response.insertInternalLink(url);
                     }
+
+                    data.saveLinks(id, url);
                 });
 
                 res.$('meta').each((_index: number, meta: { attribs: { content: any; }; }) => {
@@ -77,8 +83,9 @@ export const crawler = new crawlerLib({
                     response.insertTerms(bodyText);
                 });
 
-                eventCrawler = new EventCrawler(request, response);
-                data.save(eventCrawler);
+                eventCrawler = new EventCrawler(request, response, id);
+                data.saveEvent(eventCrawler);
+                data.saveTerms(eventCrawler);
 
                 done();
             }
