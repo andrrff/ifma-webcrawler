@@ -22,7 +22,15 @@ export class DBContext {
     {
       password = process.env.MONGODB_PASSWORD;
       username = process.env.MONGODB_USERNAME;
-      connectionString = `mongodb://${username}:${password}@${process.env.DB_CONN_STRING}`;
+	  
+	  if(password == undefined || username == undefined)
+	  {
+		connectionString = "mongodb://db:27017/admin";
+	  }
+	  else
+	  {
+		connectionString = `mongodb://${username}:${password}@${process.env.DB_CONN_STRING}`;
+	  }
     }
     else
     {
