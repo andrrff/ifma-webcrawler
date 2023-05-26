@@ -42,6 +42,7 @@ export const crawler = new crawlerLib({
             try
             {
                 const id = uuidv4();
+                await data.saveLinks(id, uri);
 
                 res.$(`a[href^="/"]${ignoreSelector},a[href^="${uri}"]${ignoreSelector},a[href^="https://"],a[href^="http://"]`)
                 .each(async (_index: number, a: { attribs: { href: any; }; }) => {
