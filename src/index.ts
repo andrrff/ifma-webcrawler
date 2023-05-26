@@ -58,28 +58,30 @@ app.get('/search', (req: Request, res: Response) => {
         const guidIndexes: searchResult[] = new Array<searchResult>();
         const guidSet = new Set();
 
-        await Promise.all(filtered.map(async (item) => {
+        filtered.forEach(item => {
             const indexes = Object.entries(item.index);
 
-            await Promise.all(indexes.map(async ([index, guid]) => {
+            indexes.forEach(async ([index, guid]) => {
                 try {
                     if (!guidSet.has(guid)) {
-                        console.log(guid);
+                        console.log(guid)
                         let search = new searchResult(Number(index), guid, '', '', '', '', new Array<string>());
                         guidSet.add(guid);
 
-                        const dataLink = await links;
-                        search.link = dataLink.find((link) => link.guid === guid).link;
+                        links.then((dataLink) => {
+                            search.link = dataLink.find(link => link.guid === guid).link; 
+                        });
 
                         const data = await webPageCallerController.getWebpageInfoAsync(search);
+                        
                         item.index[Number(index)] = guid;
                         guidIndexes.push(data);
                     }
                 } catch (error) {
-                console.error(error);
+                    console.error(error);
                 }
-            }));
-        }));
+            });
+        });
 
 
         const countedIndexes = _.countBy(guidIndexes, 'index');
