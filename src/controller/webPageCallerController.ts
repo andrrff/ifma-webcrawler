@@ -16,7 +16,8 @@ export class webPageCallerController {
 
             return result;
         } catch (error) {
-            throw new Error('Error retrieving webpage information.');
+            console.error('Error retrieving webpage information');
+            // new Error('Error retrieving webpage information.');
         }
     }
 }

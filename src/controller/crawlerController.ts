@@ -35,7 +35,7 @@ const ignoreSelector = `:not([href$=".png"]):not([href$=".jpg"]):not([href$=".mp
 export const crawler = new crawlerLib({
     maxConnections: 100,
     setTimeout: 500,
-    callback: (error: any, res: any, done: () => void) => {
+    callback: async (error: any, res: any, done: () => void) => {
         if (error) {
             console.log(error);
         } else {
@@ -44,7 +44,7 @@ export const crawler = new crawlerLib({
                 const id = uuidv4();
 
                 res.$(`a[href^="/"]${ignoreSelector},a[href^="${uri}"]${ignoreSelector},a[href^="https://"],a[href^="http://"]`)
-                .each((_index: number, a: { attribs: { href: any; }; }) => {
+                .each(async (_index: number, a: { attribs: { href: any; }; }) => {
                     let url = a.attribs.href;
 
                     if (validations.validate(url, uri, response.externalLinks)) {
@@ -65,7 +65,7 @@ export const crawler = new crawlerLib({
                         response.insertInternalLink(url);
                     }
 
-                    data.saveLinks(id, url);
+                    await data.saveLinks(id, url);
                 });
 
                 res.$('meta').each((_index: number, meta: { attribs: { content: any; }; }) => {
@@ -84,8 +84,8 @@ export const crawler = new crawlerLib({
                 });
 
                 eventCrawler = new EventCrawler(request, response, id);
-                data.saveEvent(eventCrawler);
-                data.saveTerms(eventCrawler);
+                await data.saveEvent(eventCrawler);
+                await data.saveTerms(eventCrawler);
 
                 done();
             }
