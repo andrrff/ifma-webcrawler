@@ -9,7 +9,7 @@ const uuidv4     = require('uuid/v4');
 const request    = new Request();
 const response   = new Response();
 const data       = new persistenceController();
-const maxLinks   = 1000;
+const maxLinks   = 10000;
 
 let eventCrawler = new EventCrawler(request, response);
 
@@ -28,7 +28,6 @@ const insertUriUsed = (url: string) => {
 
     return false;
 }
-
 
 const ignoreSelector = `:not([href$=".png"]):not([href$=".jpg"]):not([href$=".mp4"]):not([href$=".mp3"]):not([href$=".gif"])`;
 
