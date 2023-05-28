@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: external-dns
+  name: external-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      serviceAccountName: external-dns
+      containers:
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.13.2
+          args:
+            - --source=service
+            - --source=ingress
+            - --provider=azure
+            - --txt-prefix=externaldns-
+          volumeMounts:
+            - name: azure-config-file
+              mountPath: /etc/kubernetes
+              readOnly: true
+      volumes:
+        - name: azure-config-file
+          secret:
+            secretName: azure-config-file
