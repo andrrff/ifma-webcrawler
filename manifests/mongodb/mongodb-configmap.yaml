@@ -5,3 +5,4 @@ metadata:
   name: mongodb-configmap
 data:
   database_url: mongodb-service.crawler-bot.svc.cluster.local:27017
+  statsIsEnable: true
