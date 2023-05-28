@@ -15,6 +15,7 @@
     "@types/mongodb": "^4.0.7",
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
     "crawler": "^1.4.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",

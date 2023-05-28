@@ -5,12 +5,14 @@ import _ from 'lodash';
 import { searchResult } from "./models/searchResult";
 import { webPageCallerController } from "./controller/webPageCallerController";
 
+const cors = require("cors");
 const app  = express();
 const port = 8080;
 
 DBContext.getInstance().connect();
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (_req, res) => {
     res.send("hello world!");
